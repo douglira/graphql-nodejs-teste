@@ -1,40 +1,13 @@
-const {
-  GraphQLNonNull,
-  GraphQLList,
-  GraphQLString,
-} = require('graphql');
-
-const UserType = require('./type');
-const UserResolver = require('./resolver');
+const mutation = require('./mutation');
+const resolver = require('./resolver');
 
 const UserQuery = {
-  user: {
-    type: UserType,
-    args: {
-      id: {
-        name: 'id',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-    },
-    resolve: UserResolver.findOne,
-  },
-  users: {
-    type: new GraphQLList(UserType),
-    args: {},
-    resolve: UserResolver.findAll,
-  },
+  user: resolver.findOne,
+  users: resolver.findAll,
 };
 
 const UserMutation = {
-  userCreate: {
-    type: UserType,
-    args: {
-      firstName: { type: GraphQLString },
-      email: { type: GraphQLString },
-      role: { type: GraphQLString },
-    },
-    resolve: UserResolver.create,
-  },
+  userCreate: mutation.create,
 };
 
 module.exports.UserQuery = UserQuery;

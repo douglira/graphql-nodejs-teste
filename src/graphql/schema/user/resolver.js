@@ -1,23 +1,33 @@
 const mongoose = require('mongoose');
-const { Types: { ObjectId } } = mongoose;
-ObjectId.prototype.valueOf = function () {
-	return this.toString();
-};
+const {
+  GraphQLNonNull,
+  GraphQLString,
+  GraphQLList,
+} = require('graphql');
+const UserType = require('./type');
 
 const UserMongoose = mongoose.model('User');
 
-const UserResolver = {
-  create: async (root, { firstName, email, role }) => {
-    const user = await UserMongoose.create({ firstName, email, role });
-    return user.toObject();
+module.exports = {
+  findOne: {
+    type: UserType,
+    args: {
+      id: {
+        name: 'id',
+        type: new GraphQLNonNull(GraphQLString),
+      },
+    },
+    resolve: async (root, { id }, context, info) => {
+      const user = await UserMongoose.findById(id);
+      return user.toObject();
+    },
   },
-  findOne: async (root, { id }, context, info) => {
-    const result = await UserMongoose.findById(id);
-    return result.toObject();
-  },
-  findAll: async (root, args, context, info) => {
-    return [];
+  findAll: {
+    type: new GraphQLList(UserType),
+    args: {},
+    resolve: async (root, args, context, info) => {
+      const users = await UserMongoose.find({});
+      return users;
+    },
   },
 };
-
-module.exports = UserResolver;

@@ -1,15 +1,22 @@
+const mongoose = require('mongoose');
 const {
-  GraphQLObjectType,
-  GraphQLNonNull,
   GraphQLString,
 } = require('graphql');
 
 const UserType = require('./type');
-const UserResolver = require('./resolver');
+const UserMongoose = mongoose.model('User');
 
-const mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {}
-});
-
-module.exports = mutation;
+module.exports = {
+  create: {
+    type: UserType,
+    args: {
+      firstName: { type: GraphQLString },
+      email: { type: GraphQLString },
+      role: { type: GraphQLString },
+    },
+    resolve: async (root, { firstName, email, role }) => {
+      const user = await UserMongoose.create({ firstName, email, role });
+      return user.toObject();
+    },
+  }
+}
