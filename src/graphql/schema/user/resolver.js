@@ -3,8 +3,9 @@ const {
   GraphQLNonNull,
   GraphQLString,
   GraphQLList,
+  GraphQLID,
 } = require('graphql');
-const UserType = require('./type');
+const { UserType } = require('./type');
 
 const UserMongoose = mongoose.model('User');
 
@@ -14,7 +15,7 @@ module.exports = {
     args: {
       id: {
         name: 'id',
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLID),
       },
     },
     resolve: async (root, { id }, context, info) => {

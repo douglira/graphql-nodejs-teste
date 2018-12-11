@@ -8,6 +8,7 @@ const UserQuery = {
 
 const UserMutation = {
   userCreate: mutation.create,
+  userUpdate: mutation.update,
 };
 
 module.exports.UserQuery = UserQuery;

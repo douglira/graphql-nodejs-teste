@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const {
   GraphQLString,
+  GraphQLNonNull,
 } = require('graphql');
 
-const UserType = require('./type');
+const { UserType, UserInputType } = require('./type');
 const UserMongoose = mongoose.model('User');
 
 module.exports = {
@@ -18,5 +19,21 @@ module.exports = {
       const user = await UserMongoose.create({ firstName, email, role });
       return user.toObject();
     },
-  }
+  },
+
+  update: {
+    type: UserType,
+    args: {
+      input: {
+        type: new GraphQLNonNull(UserInputType),
+      }
+    },
+    resolve: async (root, { input: userInput }, req) => {
+      const user = await UserMongoose.findByIdAndUpdate(userInput._id, {
+        firstName: userInput.firstName,
+        email: userInput.email,
+      });
+      return user.toObject();
+    }
+  },
 }
