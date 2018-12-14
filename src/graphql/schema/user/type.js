@@ -3,7 +3,7 @@ const {
   GraphQLNonNull,
   GraphQLString,
   GraphQLID,
-  GraphQLInputObjectType
+  GraphQLInputObjectType,
 } = require('graphql');
 
 const UserType = new GraphQLObjectType({
@@ -20,7 +20,7 @@ const UserType = new GraphQLObjectType({
     },
     role: {
       type: new GraphQLNonNull(GraphQLString),
-      description: `ADMIN, MODERATOR, COMMON`,
+      description: 'ADMIN, MODERATOR, COMMON',
     },
   }),
 });

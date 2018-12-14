@@ -1,19 +1,26 @@
+const { createServer } = require('http');
 const express = require('express');
-const expressGraphql = require('express-graphql');
+const { ApolloServer } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const requireDir = require('require-dir');
 
+const { port } = require('./src/config/server');
 const { uri, options, modelsPath } = require('./src/config/database');
 
 mongoose.connect(uri, options);
 requireDir(modelsPath);
 
 const schema = require('./src/graphql/schema');
+
 const app = express();
+app.use(express.json());
 
-app.use('/graphql', expressGraphql({
+const apolloServer = new ApolloServer({
   schema,
-  graphiql: true,
-}));
+});
+apolloServer.applyMiddleware({ app, path: '/app/graphql' });
 
-app.listen('4000', () => console.log('Server running at port 4000'));
+const httpServer = createServer(app);
+apolloServer.installSubscriptionHandlers(httpServer);
+
+httpServer.listen(({ port }), () => console.log(`Server running at ${apolloServer.graphqlPath}`));

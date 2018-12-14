@@ -5,6 +5,7 @@ const {
 } = require('graphql');
 
 const { UserType, UserInputType } = require('./type');
+
 const UserMongoose = mongoose.model('User');
 
 module.exports = {
@@ -26,14 +27,14 @@ module.exports = {
     args: {
       input: {
         type: new GraphQLNonNull(UserInputType),
-      }
+      },
     },
-    resolve: async (root, { input: userInput }, req) => {
+    resolve: async (root, { input: userInput }) => {
       const user = await UserMongoose.findByIdAndUpdate(userInput._id, {
         firstName: userInput.firstName,
         email: userInput.email,
-      });
-      return user.toObject();
-    }
+      }, { lean: true, new: true });
+      return user;
+    },
   },
-}
+};

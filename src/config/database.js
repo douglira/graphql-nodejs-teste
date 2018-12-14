@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const { Types: { ObjectId } } = mongoose;
 ObjectId.prototype.valueOf = function () {
-	return this.toString();
+  return this.toString();
 };
 
 module.exports = {
